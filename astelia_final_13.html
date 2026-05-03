@@ -140,7 +140,14 @@ body{font-family:var(--f);background:var(--bg);color:var(--t1);font-size:13px;li
 .rem-chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px}
 .rem-chip{font-size:10px;padding:1px 6px;border-radius:3px;background:var(--s2);border:1px solid var(--border);color:var(--t3)}
 .dry{font-size:10.5px;color:var(--blue);background:var(--bbg);border:1px solid var(--bbr);border-radius:4px;padding:4px 8px;margin-bottom:7px;line-height:1.5}.dry strong{color:#1D40AF}
-.jbtn{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:6px;cursor:pointer;border:1.5px solid;transition:opacity .12s}.jbtn:hover{opacity:.85}
+.jbtn.ast{background:linear-gradient(135deg,#0F3D2E,#16A34A);border-color:#16A34A;box-shadow:0 2px 8px rgba(22,163,74,.25)}
+.jbtn.ast:hover{opacity:.9}
+.ast-icon{width:22px;height:22px;border-radius:4px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ast-icon svg{width:12px;height:12px;color:#fff}
+.jt.ast{color:#fff}.js.ast{color:rgba(255,255,255,.7)}
+.jarr.ast{background:rgba(255,255,255,.2);color:#fff}
+.ast-badge{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:3px;background:rgba(22,163,74,.12);border:1px solid rgba(22,163,74,.3);color:var(--green);margin-bottom:8px}
+.ast-badge svg{width:9px;height:9px}
 .jbtn.pri{background:var(--bbg);border-color:var(--blue);box-shadow:0 2px 6px rgba(37,99,235,.12)}.jbtn.sec{background:var(--s2);border-color:var(--bm)}
 .jbtn-l{display:flex;align-items:center;gap:8px}
 .jlogo{width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center}.jlogo.b{background:var(--blue)}.jlogo.gr{background:var(--t3)}.jlogo svg{width:12px;height:12px;color:#fff}
@@ -190,6 +197,32 @@ body{font-family:var(--f);background:var(--bg);color:var(--t1);font-size:13px;li
 .dt-c:nth-child(even){border-right:none}.dt-c:nth-last-child(-n+2){border-bottom:none}
 .dt-l{font-size:9.5px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:2px}
 .dt-v{font-size:11.5px;font-weight:500;color:var(--t1)}.dt-v.m{font-family:var(--mono);font-size:10.5px}.dt-v.r{color:var(--red)}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:12px;width:500px;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden}
+.modal-hdr{padding:16px 18px;background:linear-gradient(135deg,#0F3D2E,#16A34A);display:flex;align-items:center;justify-content:space-between}
+.modal-hdr-l{display:flex;align-items:center;gap:9px}
+.modal-hdr-icon{width:28px;height:28px;background:rgba(255,255,255,.15);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.modal-hdr-icon svg{width:14px;height:14px;color:#fff}
+.modal-title{font-size:13px;font-weight:700;color:#fff}
+.modal-sub{font-size:10.5px;color:rgba(255,255,255,.7);margin-top:1px}
+.modal-close{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:#fff;border:none}
+.modal-body{padding:18px}
+.modal-step{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.modal-step:last-child{margin-bottom:0}
+.modal-num{width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.modal-step-title{font-size:12px;font-weight:600;color:var(--t1);margin-bottom:2px}
+.modal-step-desc{font-size:11px;color:var(--t3);line-height:1.5}
+.modal-code{background:#1B2133;border-radius:5px;padding:7px 10px;font-family:var(--mono);font-size:10px;color:#86EFAC;line-height:1.7;margin-top:5px}
+.modal-warn{font-size:10.5px;color:var(--amber);background:var(--abg);border:1px solid var(--abr);border-radius:4px;padding:5px 9px;margin-top:5px;line-height:1.5}
+.modal-footer{padding:12px 18px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-meta{font-size:10.5px;color:var(--t3)}
+.modal-meta strong{color:var(--t2)}
+.modal-btns{display:flex;gap:8px}
+.mbtn{padding:8px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid;transition:opacity .12s}
+.mbtn:hover{opacity:.85}
+.mbtn.cancel{background:var(--s2);border-color:var(--bm);color:var(--t2)}
+.mbtn.confirm{background:linear-gradient(135deg,#0F3D2E,#16A34A);border-color:#16A34A;color:#fff}
 </style>
 </head>
 <body>
@@ -291,9 +324,9 @@ body{font-family:var(--f);background:var(--bg);color:var(--t1);font-size:13px;li
         <div class="card">
           <div class="ch"><div class="ch-l"><div class="ci a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div><span class="ct">Remediation</span></div><span class="tag a">4 options</span></div>
           <div class="cb">
-            <div class="rx"><div class="rx-ic">Rx</div><div class="rx-body"><strong>Now:</strong> WAF rule (&#9312;) &middot; <strong>Today:</strong> Apache rule (&#9313;) &middot; <strong>This week:</strong> Patch PHP (&#9314;) &middot; <strong>Q2:</strong> PHP-FPM (&#9315;)</div></div>
-            <div class="rem pri"><div class="rem-sum" onclick="tog(this)"><div class="rem-n b">&#9312;</div><div class="rem-title">Configure WAF rule &#8212; block %AD injection *</div><span class="tag b">Now</span><span class="chev">&#8250;</span></div><div class="rem-det"><div class="rem-code">Block: QUERY_STRING contains %AD or \xAD<br>Mode: Detection &#8594; Block &middot; Log: YES</div><div class="dry">* <strong>Run Detection Mode first.</strong> Review 24h logs &#8594; confirm no legitimate traffic &#8594; switch to Block. Rollback: instant.</div><div class="rem-chips"><span class="rem-chip">Owner: Security</span><span class="rem-chip">Downtime: None</span><span class="rem-chip">&lt;10 min</span></div><div class="jbtn pri"><div class="jbtn-l"><div class="jlogo b"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.53 2.03L6.2 7.37a1 1 0 000 1.41l1.06 1.06a1 1 0 001.42 0l1.76-1.76 4.67 4.67-4.67 4.67-1.76-1.76a1 1 0 00-1.42 0L6.2 16.72a1 1 0 000 1.41l5.33 5.34a1 1 0 001.41 0l5.34-5.34a1 1 0 000-1.41l-1.06-1.06a1 1 0 00-1.42 0l-1.76 1.76-4.67-4.67 4.67-4.67 1.76 1.76a1 1 0 001.42 0l1.06-1.06a1 1 0 000-1.41L12.94 2.03a1 1 0 00-1.41 0z"/></svg></div><div><div class="jt b">Create ticket &#8212; WAF rule (dry run first)</div><div class="js">Security &middot; Critical &middot; SLA: today</div></div></div><div class="jarr b">&#8594;</div></div></div></div>
-            <div class="rem"><div class="rem-sum" onclick="tog(this)"><div class="rem-n b">&#9313;</div><div class="rem-title">Apache rewrite rule &#8212; second layer</div><span class="tag b">Today</span><span class="chev">&#8250;</span></div><div class="rem-det"><div class="rem-code">RewriteEngine On<br>RewriteCond %{QUERY_STRING} ^[^=]*%ad[^=]*= [NC]<br>RewriteRule .* - [F,L]</div><div class="rem-warn">&#9888; Blocks primary vector only. Not a substitute for patching.</div><div class="rem-chips"><span class="rem-chip">Owner: Security</span><span class="rem-chip">Downtime: None</span><span class="rem-chip">&lt;5 min</span></div><div class="jbtn sec"><div class="jbtn-l"><div class="jlogo gr"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.53 2.03L6.2 7.37a1 1 0 000 1.41l1.06 1.06a1 1 0 001.42 0l1.76-1.76 4.67 4.67-4.67 4.67-1.76-1.76a1 1 0 00-1.42 0L6.2 16.72a1 1 0 000 1.41l5.33 5.34a1 1 0 001.41 0l5.34-5.34a1 1 0 000-1.41l-1.06-1.06a1 1 0 00-1.42 0l-1.76 1.76-4.67-4.67 4.67-4.67 1.76 1.76a1 1 0 001.42 0l1.06-1.06a1 1 0 000-1.41L12.94 2.03a1 1 0 00-1.41 0z"/></svg></div><div><div class="jt gr">Create ticket &#8212; Apache rewrite rule</div><div class="js">Security &middot; High</div></div></div><div class="jarr gr">&#8594;</div></div></div></div>
+            <div class="rx"><div class="rx-ic">Rx</div><div class="rx-body"><strong>Now:</strong> Deploy WAF rule (&#9312;) &#8594; native &middot; <strong>Today:</strong> Apply Apache rule (&#9313;) &#8594; native &middot; <strong>This week:</strong> Patch PHP (&#9314;) &#8594; Jira &middot; <strong>Q2:</strong> PHP-FPM (&#9315;) &#8594; Jira</div></div>
+            <div class="rem pri"><div class="rem-sum" onclick="tog(this)"><div class="rem-n b">&#9312;</div><div class="rem-title">Configure WAF rule &#8212; block %AD injection *</div><span class="tag b">Now</span><span class="chev">&#8250;</span></div><div class="rem-det"><div class="rem-code">Block: QUERY_STRING contains %AD or \xAD<br>Mode: Detection &#8594; Block &middot; Log: YES</div><div class="dry">* <strong>Run Detection Mode first.</strong> Review 24h logs &#8594; confirm no legitimate traffic &#8594; switch to Block. Rollback: instant.</div><div class="rem-chips"><span class="rem-chip">Owner: Security</span><span class="rem-chip">Downtime: None</span><span class="rem-chip">&lt;10 min</span></div><div class="ast-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z"/></svg>Astelia native action</div><div class="jbtn ast" onclick="showModal('waf')"><div class="jbtn-l"><div class="ast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="jt ast">Deploy WAF block rule on WAF-PROD</div><div class="js ast">Blocks %AD injection &middot; Detection mode first &middot; Rollback available</div></div></div><div class="jarr ast">&#8594;</div></div></div></div>
+            <div class="rem"><div class="rem-sum" onclick="tog(this)"><div class="rem-n b">&#9313;</div><div class="rem-title">Apache rewrite rule &#8212; second layer</div><span class="tag b">Today</span><span class="chev">&#8250;</span></div><div class="rem-det"><div class="rem-code">RewriteEngine On<br>RewriteCond %{QUERY_STRING} ^[^=]*%ad[^=]*= [NC]<br>RewriteRule .* - [F,L]</div><div class="rem-warn">&#9888; Blocks primary vector only. Not a substitute for patching.</div><div class="rem-chips"><span class="rem-chip">Owner: Security</span><span class="rem-chip">Downtime: None</span><span class="rem-chip">&lt;5 min</span></div><div class="ast-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z"/></svg>Astelia native action</div><div class="jbtn ast" onclick="showModal('apache')"><div class="jbtn-l"><div class="ast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="jt ast">Apply Apache rewrite rule on web-prod-win-04</div><div class="js ast">Pushes config via runbook &middot; No downtime &middot; Rollback available</div></div></div><div class="jarr ast">&#8594;</div></div></div></div>
             <div class="rem"><div class="rem-sum" onclick="tog(this)"><div class="rem-n g">&#9314;</div><div class="rem-title">Patch PHP &#8594; 8.2.20+</div><span class="tag g">Definitive fix</span><span class="chev">&#8250;</span></div><div class="rem-det"><p>Eliminates vulnerability at source. Requires deployment window + regression testing.</p><div class="rem-chips"><span class="rem-chip">Owner: DevOps</span><span class="rem-chip">Effort: Medium</span><span class="rem-chip">Downtime: ~15 min</span></div><div class="jbtn sec"><div class="jbtn-l"><div class="jlogo gr"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.53 2.03L6.2 7.37a1 1 0 000 1.41l1.06 1.06a1 1 0 001.42 0l1.76-1.76 4.67 4.67-4.67 4.67-1.76-1.76a1 1 0 00-1.42 0L6.2 16.72a1 1 0 000 1.41l5.33 5.34a1 1 0 001.41 0l5.34-5.34a1 1 0 000-1.41l-1.06-1.06a1 1 0 00-1.42 0l-1.76 1.76-4.67-4.67 4.67-4.67 1.76 1.76a1 1 0 001.42 0l1.06-1.06a1 1 0 000-1.41L12.94 2.03a1 1 0 00-1.41 0z"/></svg></div><div><div class="jt gr">Create ticket &#8212; Patch PHP 8.2.20+</div><div class="js">DevOps &middot; High &middot; Next window</div></div></div><div class="jarr gr">&#8594;</div></div></div></div>
             <div class="rem"><div class="rem-sum" onclick="tog(this)"><div class="rem-n gr">&#9315;</div><div class="rem-title">Migrate PHP-CGI &#8594; PHP-FPM</div><span class="tag gr">Long-term</span><span class="chev">&#8250;</span></div><div class="rem-det"><p>Eliminates CGI attack surface entirely. Verify app compatibility first.</p><div class="rem-chips"><span class="rem-chip">Owner: DevOps</span><span class="rem-chip">Effort: Med&#8211;High</span><span class="rem-chip">Downtime: ~30 min</span><span class="rem-chip">Eliminates CVE class</span></div><div class="jbtn sec"><div class="jbtn-l"><div class="jlogo gr"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.53 2.03L6.2 7.37a1 1 0 000 1.41l1.06 1.06a1 1 0 001.42 0l1.76-1.76 4.67 4.67-4.67 4.67-1.76-1.76a1 1 0 00-1.42 0L6.2 16.72a1 1 0 000 1.41l5.33 5.34a1 1 0 001.41 0l5.34-5.34a1 1 0 000-1.41l-1.06-1.06a1 1 0 00-1.42 0l-1.76 1.76-4.67-4.67 4.67-4.67 1.76 1.76a1 1 0 001.42 0l1.06-1.06a1 1 0 000-1.41L12.94 2.03a1 1 0 00-1.41 0z"/></svg></div><div><div class="jt gr">Create ticket &#8212; Migrate to PHP-FPM</div><div class="js">DevOps &middot; Medium &middot; Q2</div></div></div><div class="jarr gr">&#8594;</div></div></div></div>
           </div>
@@ -393,11 +426,111 @@ body{font-family:var(--f);background:var(--bg);color:var(--t1);font-size:13px;li
     </div>
   </div>
 </div>
+<!-- WAF MODAL -->
+<div class="modal-overlay" id="modal-waf" onclick="closeModal(event,this)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-hdr-l">
+        <div class="modal-hdr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div><div class="modal-title">Deploy WAF Block Rule — WAF-PROD</div><div class="modal-sub">Astelia will push this rule directly via Imperva API</div></div>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('modal-waf').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-step">
+        <div class="modal-num">1</div>
+        <div>
+          <div class="modal-step-title">Run in Detection Mode (24h)</div>
+          <div class="modal-step-desc">Astelia deploys the rule in detection-only mode. Logs all matching requests without blocking. You review the log before any traffic is blocked.</div>
+          <div class="modal-code">QUERY_STRING contains %AD or \xAD → LOG only (no block)</div>
+        </div>
+      </div>
+      <div class="modal-step">
+        <div class="modal-num">2</div>
+        <div>
+          <div class="modal-step-title">Review detection log</div>
+          <div class="modal-step-desc">Astelia surfaces matched requests after 24h. Confirm no legitimate traffic is affected before proceeding.</div>
+        </div>
+      </div>
+      <div class="modal-step">
+        <div class="modal-num">3</div>
+        <div>
+          <div class="modal-step-title">Switch to Block Mode</div>
+          <div class="modal-step-desc">One-click promotion from Detection to Block. Rollback available instantly from this panel.</div>
+          <div class="modal-warn">⚠ Compensating control only — does not eliminate the vulnerability. Patch PHP (③) remains required.</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-meta">Target: <strong>WAF-PROD</strong> · Via: <strong>Imperva API</strong> · Downtime: <strong>None</strong></div>
+      <div class="modal-btns">
+        <button class="mbtn cancel" onclick="document.getElementById('modal-waf').classList.remove('open')">Cancel</button>
+        <button class="mbtn confirm" onclick="showSuccess('modal-waf','WAF rule deployed in Detection Mode')">Deploy in Detection Mode →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APACHE MODAL -->
+<div class="modal-overlay" id="modal-apache" onclick="closeModal(event,this)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-hdr-l">
+        <div class="modal-hdr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div><div class="modal-title">Apply Apache Rewrite Rule — web-prod-win-04</div><div class="modal-sub">Astelia will push this config change via runbook</div></div>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('modal-apache').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-step">
+        <div class="modal-num">1</div>
+        <div>
+          <div class="modal-step-title">Preview config change</div>
+          <div class="modal-step-desc">The following directive will be appended to the Apache virtual host config on web-prod-win-04.</div>
+          <div class="modal-code">RewriteEngine On<br>RewriteCond %{QUERY_STRING} ^[^=]*%ad[^=]*= [NC]<br>RewriteRule .* - [F,L]</div>
+        </div>
+      </div>
+      <div class="modal-step">
+        <div class="modal-num">2</div>
+        <div>
+          <div class="modal-step-title">Graceful reload — no downtime</div>
+          <div class="modal-step-desc">Astelia triggers <span style="font-family:var(--mono);font-size:10.5px">apachectl graceful</span> after applying the config. No connection drops. Active sessions unaffected.</div>
+        </div>
+      </div>
+      <div class="modal-step">
+        <div class="modal-num">3</div>
+        <div>
+          <div class="modal-step-title">Verification + rollback</div>
+          <div class="modal-step-desc">Astelia verifies the rule is active and logs the change. One-click rollback removes the directive and reloads Apache.</div>
+          <div class="modal-warn">⚠ Blocks the primary injection vector only. Not a substitute for patching PHP to 8.2.20+ (③).</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-meta">Target: <strong>web-prod-win-04</strong> · Via: <strong>Runbook</strong> · Downtime: <strong>None</strong></div>
+      <div class="modal-btns">
+        <button class="mbtn cancel" onclick="document.getElementById('modal-apache').classList.remove('open')">Cancel</button>
+        <button class="mbtn confirm" onclick="showSuccess('modal-apache','Apache rewrite rule applied successfully')">Apply Rule →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 document.getElementById('ad').textContent=new Date().toISOString().split('T')[0];
 function tog(el){const c=el.querySelector('.chev'),d=el.nextElementSibling,o=d.classList.contains('open');d.classList.toggle('open',!o);if(c)c.classList.toggle('open',!o)}
 function togSec(el){const c=el.querySelector('.chev'),d=el.nextElementSibling,o=d.classList.contains('open');d.classList.toggle('open',!o);if(c)c.classList.toggle('open',!o)}
 function tDmg(el){const s=document.getElementById('dmg'),c=el.querySelector('.chev'),o=s.style.display==='flex';s.style.display=o?'none':'flex';if(c)c.classList.toggle('open',!o)}
+function showModal(id){document.getElementById('modal-'+id).classList.add('open')}
+function closeModal(e,overlay){if(e.target===overlay)overlay.classList.remove('open')}
+function showSuccess(modalId, msg){
+  document.getElementById(modalId).classList.remove('open');
+  const toast=document.createElement('div');
+  toast.style.cssText='position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#0F3D2E,#16A34A);color:#fff;padding:10px 20px;border-radius:8px;font-size:12px;font-weight:600;font-family:Inter,sans-serif;box-shadow:0 4px 20px rgba(0,0,0,.2);z-index:9999;display:flex;align-items:center;gap:8px';
+  toast.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>'+msg;
+  document.body.appendChild(toast);
+  setTimeout(()=>toast.remove(),3500);
+}
 </script>
 </body>
 </html>
