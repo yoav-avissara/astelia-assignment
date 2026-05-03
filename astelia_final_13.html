@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CVE-2024-4577 - web-prod-win-04 | Astelia</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F6F8;--surface:#fff;--s2:#F9FAFB;--border:#E5E7EB;--bm:#D1D5DB;--t1:#111827;--t2:#374151;--t3:#6B7280;--t4:#9CA3AF;--green:#16A34A;--gbg:#F0FDF4;--gbr:#86EFAC;--red:#DC2626;--rbg:#FEF2F2;--rbr:#FECACA;--rm:#FCA5A5;--amber:#D97706;--abg:#FFFBEB;--abr:#FDE68A;--blue:#2563EB;--bbg:#EFF6FF;--bbr:#BFDBFE;--sidebar:#1B2133;--f:'Inter',sans-serif;--mono:'SF Mono','Fira Code',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--bg);color:var(--t1);font-size:13px;line-height:1.5;display:flex;min-height:100vh;-webkit-font-smoothing:antialiased}
+.sb{width:48px;background:var(--sidebar);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:2px;z-index:100}
+.sb-logo{width:28px;height:28px;background:var(--green);border-radius:7px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.sb-logo svg{width:16px;height:16px;color:#fff}
+.sb-ic{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#4B5A7A;cursor:pointer}
+.sb-ic:hover{background:rgba(255,255,255,.07);color:#94A3B8}
+.sb-ic.on{background:rgba(255,255,255,.1);color:#fff}
+.sb-ic svg{width:15px;height:15px}
+.sb-div{width:24px;height:1px;background:rgba(255,255,255,.07);margin:4px 0}
+.shell{margin-left:48px;flex:1;display:flex;flex-direction:column}
+.topbar{height:44px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:5px;font-size:12px;color:var(--t3);position:sticky;top:0;z-index:50}
+.topbar a{color:var(--t3);text-decoration:none}.topbar a:hover{color:var(--t1)}
+.topbar .sep{color:var(--bm)}.topbar .cur{color:var(--t1);font-weight:500}
+.page{padding:16px 18px 40px}
+.hdr{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:14px}
+.hdr-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px}
+.hdr-eye{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);margin-bottom:3px}
+.hdr-title{font-size:17px;font-weight:700;color:var(--t1);letter-spacing:-.3px;margin-bottom:7px}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;border:1px solid var(--border);background:var(--s2);color:var(--t2)}
+.chip.r{background:var(--rbg);border-color:var(--rbr);color:var(--red)}
+.chip-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.verdict{display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:7px;font-weight:700;font-size:12.5px;border:1.5px solid;background:var(--rbg);border-color:var(--rm);color:var(--red)}
+.vdot{width:7px;height:7px;border-radius:50%;background:currentColor;position:relative}
+.vdot::after{content:'';position:absolute;inset:-3px;border-radius:50%;background:currentColor;opacity:.2;animation:ping 2s infinite}
+@keyframes ping{0%{transform:scale(1);opacity:.2}70%{transform:scale(1.8);opacity:0}100%{transform:scale(1.8);opacity:0}}
+.v-meta{font-size:10.5px;color:var(--t4);display:flex;align-items:center;gap:5px}
+.vpill{padding:1px 7px;border-radius:4px;font-size:10.5px;font-weight:500;border:1px solid var(--border);background:var(--s2);color:var(--t2)}
+.sev{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:5px;font-size:11px;font-weight:800;border:1.5px solid;font-family:var(--mono)}
+.sev.C{background:var(--rbg);border-color:var(--rm);color:var(--red)}
+.score-strip{display:flex;align-items:center;gap:8px;padding-top:12px;border-top:1px solid var(--border)}
+.score-pill{display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:7px;border:1.5px solid}
+.score-pill.r{background:var(--rbg);border-color:var(--rm)}.score-pill.a{background:var(--abg);border-color:var(--abr)}
+.score-lbl{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.score-lbl.r{color:#EF4444}.score-lbl.a{color:var(--amber)}
+.score-val{font-size:18px;font-weight:800;font-family:var(--mono);line-height:1}
+.score-val.r{color:var(--red)}.score-val.a{color:var(--amber)}
+.strip-sep{width:1px;height:28px;background:var(--border)}
+.strip-stat{display:flex;flex-direction:column;gap:1px}
+.strip-stat-val{font-size:13px;font-weight:700;color:var(--t1);font-family:var(--mono)}
+.strip-stat-val.r{color:var(--red)}
+.strip-stat-lbl{font-size:10px;color:var(--t3)}
+.strip-status{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t3)}
+.strip-status-dot{width:6px;height:6px;border-radius:50%;background:var(--red)}
+.layout{display:grid;grid-template-columns:1fr 268px;gap:14px;align-items:start}
+.col-l{display:flex;flex-direction:column;gap:12px}
+.col-r{display:flex;flex-direction:column;gap:12px;position:sticky;top:58px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.ch{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ch-l{display:flex;align-items:center;gap:7px}
+.ci{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ci svg{width:10px;height:10px}
+.ci.r{background:var(--rbg);color:var(--red)}.ci.g{background:var(--gbg);color:var(--green)}
+.ci.a{background:var(--abg);color:var(--amber)}.ci.b{background:var(--bbg);color:var(--blue)}
+.ci.gr{background:var(--s2);color:var(--t3)}
+.ct{font-size:12px;font-weight:600;color:var(--t2)}
+.cb{padding:13px}.cb.np{padding:0}
+.tag{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:10.5px;font-weight:600;border:1px solid;white-space:nowrap}
+.tag.r{background:var(--rbg);border-color:var(--rbr);color:var(--red)}
+.tag.g{background:var(--gbg);border-color:var(--gbr);color:var(--green)}
+.tag.a{background:var(--abg);border-color:var(--abr);color:var(--amber)}
+.tag.b{background:var(--bbg);border-color:var(--bbr);color:var(--blue)}
+.tag.gr{background:var(--s2);border-color:var(--bm);color:var(--t3)}
+.chev{font-size:10px;color:var(--t4);transition:transform .15s;flex-shrink:0}
+.chev.open{transform:rotate(90deg)}
+.gw{background:var(--s2);border:1px solid var(--border);border-radius:7px;padding:18px 12px 12px;position:relative;overflow:hidden}
+.gw::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:24px 24px;opacity:.5;pointer-events:none}
+.gr{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between}
+.gn{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0}
+.gb{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;border:1.5px solid var(--bm);background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.gb.att{background:var(--rbg);border-color:var(--rm)}.gb.waf{background:var(--abg);border-color:var(--abr);border-style:dashed;border-width:2px}
+.gb.fw{background:var(--abg);border-color:var(--abr)}.gb.lb{background:var(--bbg);border-color:var(--bbr)}
+.gb.tgt{background:var(--rbg);border:2px solid var(--red);box-shadow:0 0 0 3px rgba(220,38,38,.1)}.gb.blk{opacity:.3}
+.gn-name{font-size:10px;font-weight:600;color:var(--t1);text-align:center}
+.gn-name.r{color:var(--red)}.gn-name.a{color:var(--amber)}
+.gn-sub{font-size:9px;color:var(--t3);text-align:center;line-height:1.3}
+.ge{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:0 2px;min-width:28px}
+.ge-lbl{font-size:9px;font-weight:600;padding:1px 4px;border-radius:3px;border:1px solid;font-family:var(--mono);white-space:nowrap}
+.ge-lbl.on{background:var(--rbg);border-color:var(--rbr);color:var(--red)}
+.ge-lbl.off{background:var(--s2);border-color:var(--border);color:var(--t4)}
+.ge-lbl.w{background:var(--abg);border-color:var(--abr);color:var(--amber)}
+.ge-lbl.ann{background:transparent;border-color:transparent;color:var(--amber);font-size:8.5px}
+.gl{width:100%;height:2px;position:relative}
+.gl.on{background:var(--red)}.gl.off{background:var(--bm);opacity:.4}
+.gl.partial{background:repeating-linear-gradient(90deg,var(--amber) 0,var(--amber) 5px,transparent 5px,transparent 9px)}
+.gl.on::after,.gl.off::after,.gl.partial::after{content:'';position:absolute;right:-1px;top:50%;transform:translateY(-50%);border-top:3px solid transparent;border-bottom:3px solid transparent}
+.gl.on::after{border-left:6px solid var(--red)}.gl.off::after{border-left:6px solid var(--bm);opacity:.4}.gl.partial::after{border-left:6px solid var(--amber)}
+.g-leg{margin-top:10px;padding-top:8px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.g-leg-i{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--t3)}
+.g-leg-l{width:14px;height:2px;border-radius:1px}
+.shared{margin-top:8px;background:#FFF7ED;border:1px solid #FED7AA;border-radius:6px;padding:7px 11px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.shared-l{display:flex;align-items:center;gap:7px;font-size:11.5px;color:#92400E}
+.shared-n{width:18px;height:18px;background:#FED7AA;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#C2410C;flex-shrink:0}
+.shared-lnk{font-size:11px;color:var(--blue);cursor:pointer;text-decoration:underline;white-space:nowrap}
+.dmg{background:#FFF1F2;border:1px solid #FECDD3;border-left:3px solid var(--red);border-radius:6px;padding:9px 11px;margin-top:8px}
+.dmg-hdr{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.dmg-hdr-l{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.04em}
+.dmg-steps{margin-top:8px;display:none;flex-direction:column;gap:5px}
+.dmg-step{display:flex;align-items:flex-start;gap:7px}
+.dmg-num{width:15px;height:15px;border-radius:50%;background:var(--red);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.dmg-txt{font-size:11px;color:#9F1239;line-height:1.5}.dmg-txt strong{color:#881337}
+.ev-list{display:flex;flex-direction:column;gap:1px;background:var(--border);border-radius:7px;overflow:hidden}
+.ev-item{background:var(--surface);border-left:3px solid transparent}
+.ev-item.pass{border-left-color:var(--green)}.ev-item.info{border-left-color:var(--blue)}.ev-item.ok{border-left-color:var(--green);background:var(--gbg)}
+.ev-sum{display:flex;align-items:center;gap:9px;padding:9px 12px;cursor:pointer;user-select:none}
+.ev-sum:hover{background:var(--s2)}
+.ev-ic{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0}
+.ev-ic.pass{background:var(--gbg);color:var(--green);border:1px solid var(--gbr)}.ev-ic.star{background:var(--abg);color:var(--amber);border:1px solid var(--abr);font-size:10px}.ev-ic.info{background:var(--bbg);color:var(--blue);border:1px solid var(--bbr)}.ev-ic.ok{background:var(--gbg);color:var(--green);border:1px solid var(--gbr)}
+.ev-row{flex:1;display:flex;align-items:center;gap:7px;min-width:0}
+.ev-title{font-size:12px;font-weight:600;color:var(--t1);flex:1}
+.ev-meta{font-family:var(--mono);font-size:10px;color:var(--t3);white-space:nowrap}
+.ev-bdg{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:1px 5px;border-radius:3px;white-space:nowrap}
+.ev-bdg.a{background:var(--abg);color:var(--amber);border:1px solid var(--abr)}.ev-bdg.g{background:var(--gbg);color:var(--green);border:1px solid var(--gbr)}
+.ev-det{display:none;padding:0 12px 10px 39px}.ev-det.open{display:block}
+.ev-det p{font-size:11px;color:var(--t3);line-height:1.6;margin-bottom:4px}
+.ev-val{display:inline-block;font-family:var(--mono);font-size:10px;background:var(--s2);border:1px solid var(--border);padding:2px 6px;border-radius:3px;color:var(--t2)}
+.rx{background:var(--gbg);border:1.5px solid var(--green);border-radius:7px;padding:9px 12px;margin-bottom:10px;display:flex;gap:9px;align-items:flex-start}
+.rx-ic{width:22px;height:22px;background:var(--green);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0;margin-top:1px}
+.rx-body{font-size:11px;color:#166534;line-height:1.6}.rx-body strong{color:#14532D}
+.rem{border:1px solid var(--border);border-radius:7px;margin-bottom:6px;overflow:hidden}.rem:last-child{margin-bottom:0}.rem.pri{border-color:var(--blue);border-width:1.5px}
+.rem-sum{display:flex;align-items:center;gap:9px;padding:9px 12px;cursor:pointer;user-select:none}.rem-sum:hover{background:var(--s2)}
+.rem-n{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.rem-n.b{background:var(--bbg);color:var(--blue);border:1px solid var(--bbr)}.rem-n.g{background:var(--gbg);color:var(--green);border:1px solid var(--gbr)}.rem-n.gr{background:var(--s2);color:var(--t3);border:1px solid var(--bm)}
+.rem-title{font-size:12px;font-weight:600;color:var(--t1);flex:1}
+.rem-det{display:none;padding:9px 12px 10px 39px;border-top:1px solid var(--border)}.rem-det.open{display:block}
+.rem-det p{font-size:11px;color:var(--t3);line-height:1.5;margin-bottom:6px}
+.rem-code{background:#1B2133;border-radius:5px;padding:7px 9px;font-family:var(--mono);font-size:10px;color:#86EFAC;line-height:1.7;margin-bottom:6px}
+.rem-warn{font-size:10.5px;color:var(--amber);background:var(--abg);border:1px solid var(--abr);border-radius:4px;padding:4px 8px;margin-bottom:6px;line-height:1.5}
+.rem-chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px}
+.rem-chip{font-size:10px;padding:1px 6px;border-radius:3px;background:var(--s2);border:1px solid var(--border);color:var(--t3)}
+.dry{font-size:10.5px;color:var(--blue);background:var(--bbg);border:1px solid var(--bbr);border-radius:4px;padding:4px 8px;margin-bottom:7px;line-height:1.5}.dry strong{color:#1D40AF}
+.jbtn{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:6px;cursor:pointer;border:1.5px solid;transition:opacity .12s}.jbtn:hover{opacity:.85}
+.jbtn.pri{background:var(--bbg);border-color:var(--blue);box-shadow:0 2px 6px rgba(37,99,235,.12)}.jbtn.sec{background:var(--s2);border-color:var(--bm)}
+.jbtn-l{display:flex;align-items:center;gap:8px}
+.jlogo{width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center}.jlogo.b{background:var(--blue)}.jlogo.gr{background:var(--t3)}.jlogo svg{width:12px;height:12px;color:#fff}
+.jt{font-size:11.5px;font-weight:600}.jt.b{color:#1D40AF}.jt.gr{color:var(--t2)}
+.js{font-size:10px;color:var(--t3);margin-top:1px}
+.jarr{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff}.jarr.b{background:var(--blue)}.jarr.gr{background:var(--t3)}
+.sec-sum{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:10px}
+.sec-sum:hover{opacity:.8}.sec-sum-txt{font-size:12px;color:var(--t2);line-height:1.4;flex:1;padding-right:10px}
+.sec-det{display:none}.sec-det.open{display:block}
+.blast-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:7px;overflow:hidden;margin-bottom:9px}
+.bs{background:var(--surface);padding:9px 6px;text-align:center}
+.bs-n{font-size:19px;font-weight:700;font-family:var(--mono);color:var(--t1);line-height:1}.bs-n.r{color:var(--red)}.bs-n.a{color:var(--amber)}.bs-l{font-size:9.5px;color:var(--t3);margin-top:2px}
+.br{display:flex;align-items:center;justify-content:space-between;padding:6px 9px;border-radius:5px;background:var(--s2);border:1px solid var(--border);margin-bottom:4px}.br:last-child{margin-bottom:0}
+.br-name{font-size:11px;font-weight:600;font-family:var(--mono);color:var(--t1)}.br-sub{font-size:10px;color:var(--t3);margin-top:1px}
+.bm-wrap{background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-top:7px}
+.bm-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--t4);margin-bottom:8px}
+.bm-row{display:flex;align-items:center;gap:0;margin-bottom:7px}.bm-row:last-child{margin-bottom:0}
+.bm-nd{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0}
+.bm-b{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;border:1.5px solid var(--bm);background:var(--surface)}
+.bm-b.s{background:var(--rbg);border-color:var(--rm)}.bm-b.dr{background:var(--rbg);border-color:var(--rm)}.bm-b.da{background:var(--abg);border-color:var(--abr)}
+.bm-lb{font-size:8.5px;color:var(--t3);font-family:var(--mono);max-width:40px;text-align:center;line-height:1.2}
+.bm-edge{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.bm-line{width:100%;height:1.5px;position:relative}.bm-line.r{background:var(--red)}.bm-line.a{background:var(--amber)}
+.bm-line.r::after,.bm-line.a::after{content:'';position:absolute;right:-1px;top:50%;transform:translateY(-50%);border-top:3px solid transparent;border-bottom:3px solid transparent}
+.bm-line.r::after{border-left:5px solid var(--red)}.bm-line.a::after{border-left:5px solid var(--amber)}
+.bm-port{font-size:9px;font-family:var(--mono);color:var(--t4)}
+.bm-res{margin-left:7px;font-size:10px;font-weight:600;align-self:center;white-space:nowrap}.bm-res.r{color:var(--red)}.bm-res.a{color:var(--amber)}
+.bi-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:7px;overflow:hidden;margin-bottom:10px}
+.bi-s{background:var(--surface);padding:9px 6px;text-align:center}
+.bi-n{font-size:17px;font-weight:700;font-family:var(--mono);color:var(--red);line-height:1}.bi-l{font-size:9.5px;color:var(--t3);margin-top:2px;line-height:1.3}
+.bi-row{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}.bi-row:last-child{border-bottom:none;padding-bottom:0}
+.bi-icon{font-size:13px;flex-shrink:0;margin-top:1px}
+.bi-t{font-size:11.5px;font-weight:600;color:var(--t1);margin-bottom:1px}.bi-d{font-size:11px;color:var(--t3);line-height:1.5}.bi-d strong{color:var(--t2)}
+.si-hdr{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.si-leg{display:flex;flex-direction:column;gap:4px}.si-li{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t2)}.si-ld{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.si-list{display:flex;flex-direction:column;gap:4px;margin-bottom:9px}
+.si-row{display:flex;align-items:center;justify-content:space-between;padding:6px 9px;border-radius:5px;background:var(--s2);border:1px solid var(--border)}
+.si-name{font-size:11px;font-weight:600;font-family:var(--mono);color:var(--t1)}.si-sub{font-size:10px;color:var(--t3);margin-top:1px}
+.si-rc{background:var(--abg);border:1px solid var(--abr);border-left:3px solid var(--amber);border-radius:6px;padding:8px 11px}
+.si-rc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--amber);margin-bottom:3px}
+.si-rc-txt{font-size:11px;color:#78350F;line-height:1.55}.si-rc-txt strong{color:#92400E}
+.risk-rows{display:flex;flex-direction:column;gap:4px}
+.rr{display:flex;align-items:center;justify-content:space-between;padding:6px 9px;border-radius:5px;background:var(--s2);border:1px solid var(--border)}
+.rr-l{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t2);font-weight:500}.rdot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.dt{display:grid;grid-template-columns:1fr 1fr}
+.dt-c{padding:7px 11px;border-bottom:1px solid var(--border);border-right:1px solid var(--border)}
+.dt-c:nth-child(even){border-right:none}.dt-c:nth-last-child(-n+2){border-bottom:none}
+.dt-l{font-size:9.5px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:2px}
+.dt-v{font-size:11.5px;font-weight:500;color:var(--t1)}.dt-v.m{font-family:var(--mono);font-size:10.5px}.dt-v.r{color:var(--red)}
+</style>
+</head>
+<body>
+<nav class="sb">
+  <div class="sb-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z"/></svg></div>
+  <div class="sb-ic on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+  <div class="sb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+  <div class="sb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+  <div class="sb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
+  <div class="sb-div"></div>
+  <div class="sb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
+</nav>
+<div class="shell">
+  <header class="topbar">
+    <a href="#">Issues</a><span class="sep">&#8250;</span><a href="#">CVE-2024-4577</a><span class="sep">&#8250;</span><span class="cur">web-prod-win-04</span>
+  </header>
+  <div class="page">
+    <div class="hdr">
+      <div class="hdr-top">
+        <div>
+          <div class="hdr-eye">Vulnerability Instance</div>
+          <div class="hdr-title">CVE-2024-4577 &#8212; PHP CGI Argument Injection</div>
+          <div class="chips">
+            <span class="chip"><span class="chip-dot"></span>web-prod-win-04</span>
+            <span class="chip">10.0.14.88</span>
+            <span class="chip">Windows Server 2019</span>
+            <span class="chip">PHP 8.2.14 &middot; CGI</span>
+            <span class="chip">Locale: zh-TW</span>
+            <span class="chip r">&#9888; 284 days unpatched</span>
+          </div>
+        </div>
+        <div class="hdr-right">
+          <div class="verdict"><div class="vdot"></div>Reachable &amp; Exploitable</div>
+          <div class="v-meta"><span id="ad"></span> &middot; <span class="vpill">Tenable Nessus</span><span class="vpill">CrowdStrike Falcon Insight</span></div>
+        </div>
+      </div>
+      <div class="score-strip">
+        <div class="score-pill r"><div><div class="score-lbl r">Astelia Severity</div><div class="score-val r">Critical</div></div><div class="sev C">C</div></div>
+        <div class="score-pill a"><div><div class="score-lbl a">CVSS v3.1</div><div class="score-val a">9.8</div></div></div>
+        <div class="strip-sep"></div>
+        <div class="strip-stat"><div class="strip-stat-val r">93.2%</div><div class="strip-stat-lbl">EPSS</div></div>
+        <div class="strip-stat"><div class="strip-stat-val r">KEV</div><div class="strip-stat-lbl">CISA listed</div></div>
+        <div class="strip-sep"></div>
+        <div class="strip-status"><div class="strip-status-dot"></div>Open &middot; J. Cohen</div>
+      </div>
+    </div>
+    <div class="layout">
+      <div class="col-l">
+        <div class="card">
+          <div class="ch"><div class="ch-l"><div class="ci r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg></div><span class="ct">Exposure Graph</span></div><span class="tag r">Attack path confirmed</span></div>
+          <div class="cb">
+            <div class="gw">
+              <div class="gr">
+                <div class="gn"><div class="gb att">&#127760;</div><div class="gn-name">Internet</div><div class="gn-sub">Attacker</div></div>
+                <div class="ge"><div class="ge-lbl on">TCP/443</div><div class="gl on"></div></div>
+                <div class="gn"><div class="gb waf">&#128269;</div><div class="gn-name a">WAF-PROD</div><div class="gn-sub">Partial &middot; %AD not blocked</div></div>
+                <div class="ge"><div class="ge-lbl w">PASS</div><div class="gl partial"></div></div>
+                <div class="gn"><div class="gb fw">&#128737;</div><div class="gn-name">FW-EDGE-01</div><div class="gn-sub">Rule 88 &middot; 2019</div></div>
+                <div class="ge"><div class="ge-lbl on">TCP/80</div><div class="gl on"></div></div>
+                <div class="gn"><div class="gb lb">&#9878;</div><div class="gn-name">ALB-PROD</div><div class="gn-sub">AWS &middot; HTTP</div></div>
+                <div class="ge"><div class="ge-lbl on">HTTP/80</div><div class="gl on"></div><div class="ge-lbl ann">GET /php-cgi.exe?%AD...</div></div>
+                <div class="gn"><div class="gb tgt">&#127919;</div><div class="gn-name r">web-prod-win-04</div><div class="gn-sub">PHP-CGI &middot; zh-TW</div></div>
+                <div class="ge"><div class="ge-lbl off">Seg.</div><div class="gl off"></div></div>
+                <div class="gn"><div class="gb blk">&#128452;</div><div class="gn-name" style="opacity:.4">db-prod-01</div><div class="gn-sub" style="opacity:.4">Blocked</div></div>
+              </div>
+              <div class="g-leg">
+                <div class="g-leg-i"><div class="g-leg-l" style="background:var(--red)"></div>Confirmed</div>
+                <div class="g-leg-i"><div class="g-leg-l" style="background:var(--amber)"></div>Partial</div>
+                <div class="g-leg-i"><div class="g-leg-l" style="background:var(--bm);opacity:.5"></div>Blocked</div>
+                <div style="margin-left:auto;font-size:9.5px;color:var(--t4);font-family:var(--mono);">Palo Alto &middot; AWS ALB &middot; WAF</div>
+              </div>
+              <div class="shared"><div class="shared-l"><div class="shared-n">2</div><span><strong>2 other assets</strong> share this path via Rule 88</span></div><span class="shared-lnk">View &#8594;</span></div>
+              <div class="dmg">
+                <div class="dmg-hdr" onclick="tDmg(this)"><div class="dmg-hdr-l"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>If exploited &#8212; attacker can</div><span class="chev">&#8250;</span></div>
+                <div class="dmg-steps" id="dmg">
+                  <div class="dmg-step"><div class="dmg-num">1</div><div class="dmg-txt"><strong>Run arbitrary code</strong> &#8212; no credentials needed</div></div>
+                  <div class="dmg-step"><div class="dmg-num">2</div><div class="dmg-txt"><strong>Install a backdoor</strong> &#8212; persists even after patching</div></div>
+                  <div class="dmg-step"><div class="dmg-num">3</div><div class="dmg-txt"><strong>Reach db-prod-01</strong> via TCP/5432 &#8212; 2.3M records</div></div>
+                  <div class="dmg-step"><div class="dmg-num">4</div><div class="dmg-txt"><strong>Spread ransomware</strong> to win-02, win-03 via SMB/445</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ch-l"><div class="ci g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div><span class="ct">Evidence</span></div><span style="font-size:11px;color:var(--t3);">5 met &middot; 0 unmet &middot; All stars aligned</span></div>
+          <div class="cb np">
+            <div class="ev-list">
+              <div class="ev-item pass"><div class="ev-sum" onclick="tog(this)"><div class="ev-ic star">&#9733;</div><div class="ev-row"><span class="ev-title">zh-TW locale &#8212; Best-Fit encoding active</span><span class="ev-bdg a">Astelia-only</span><span class="ev-meta">CP950 &middot; 0xAD&#8594;0x2D</span></div><span class="chev">&#8250;</span></div><div class="ev-det"><p>Windows on zh-TW maps soft hyphen (0xAD) &#8594; hyphen (0x2D). Makes exploitation possible. Undetectable by scanners. Also: zh-CN, ja-JP.</p><span class="ev-val">CrowdStrike Falcon Insight &middot; OS metadata</span></div></div>
+              <div class="ev-item pass"><div class="ev-sum" onclick="tog(this)"><div class="ev-ic pass">&#10003;</div><div class="ev-row"><span class="ev-title">Internet-facing &#8212; Rule 88 open</span><span class="ev-meta">tcp/443&#8594;80 &middot; any source</span></div><span class="chev">&#8250;</span></div><div class="ev-det"><p>FW-EDGE-01 Rule 88 allows all external traffic. Created March 2019, last modified July 2021, no expiry.</p><span class="ev-val">Palo Alto firewall policy</span></div></div>
+              <div class="ev-item pass"><div class="ev-sum" onclick="tog(this)"><div class="ev-ic pass">&#10003;</div><div class="ev-row"><span class="ev-title">php-cgi.exe active &#8212; CGI mode running</span><span class="ev-meta">PID 4892 &middot; uptime 14d</span></div><span class="chev">&#8250;</span></div><div class="ev-det"><p>CVE-2024-4577 requires CGI mode. php-cgi.exe confirmed running. PHP-FPM is not affected.</p><span class="ev-val">CrowdStrike Falcon Insight &middot; runtime</span></div></div>
+              <div class="ev-item pass"><div class="ev-sum" onclick="tog(this)"><div class="ev-ic pass">&#10003;</div><div class="ev-row"><span class="ev-title">PHP 8.2.14 &#8212; vulnerable (fixed: 8.2.20)</span><span class="ev-meta">patch available 284 days</span></div><span class="chev">&#8250;</span></div><div class="ev-det"><p>PHP 8.2.14 is in the affected range (&lt;8.2.20). Patch released June 6, 2024.</p><span class="ev-val">Tenable Nessus</span></div></div>
+              <div class="ev-item pass"><div class="ev-sum" onclick="tog(this)"><div class="ev-ic pass">&#10003;</div><div class="ev-row"><span class="ev-title">Apache routes .php via php-cgi.exe</span><span class="ev-meta">AddHandler cgi-script</span></div><span class="chev">&#8250;</span></div><div class="ev-det"><p>Apache 2.4.58 configured with AddHandler cgi-script .php. All PHP requests pass through the vulnerable binary.</p><span class="ev-val">Tenable Nessus &middot; config analysis</span></div></div>
+              <div class="ev-item info"><div class="ev-sum" onclick="tog(this)"><div class="ev-ic info">i</div><div class="ev-row"><span class="ev-title">CISA KEV &middot; Public PoC &middot; EPSS 93.2%</span><span class="ev-meta">KEV: 2024-06-13</span></div><span class="chev">&#8250;</span></div><div class="ev-det"><p>PoC within 24h of disclosure. Mass exploitation within 48h. No auth required.</p><span class="ev-val">CISA &middot; ShadowServer &middot; watchTowr Labs</span></div></div>
+              <div class="ev-item ok"><div class="ev-sum" onclick="tog(this)"><div class="ev-ic ok">&#10003;</div><div class="ev-row"><span class="ev-title">web-prod-win-07 &#8212; same CVE, NOT exploitable</span><span class="ev-bdg g">Counter-example</span></div><span class="chev">&#8250;</span></div><div class="ev-det"><p>PHP 8.2.14, internet-facing, CVSS 9.8 &#8212; identical. PHP runs in FPM mode. One condition fails &#8594; Not exploitable.</p><span class="ev-val">web-prod-win-07 &middot; FPM &middot; NOT EXPLOITABLE</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ch-l"><div class="ci a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div><span class="ct">Remediation</span></div><span class="tag a">4 options</span></div>
+          <div class="cb">
+            <div class="rx"><div class="rx-ic">Rx</div><div class="rx-body"><strong>Now:</strong> WAF rule (&#9312;) &middot; <strong>Today:</strong> Apache rule (&#9313;) &middot; <strong>This week:</strong> Patch PHP (&#9314;) &middot; <strong>Q2:</strong> PHP-FPM (&#9315;)</div></div>
+            <div class="rem pri"><div class="rem-sum" onclick="tog(this)"><div class="rem-n b">&#9312;</div><div class="rem-title">Configure WAF rule &#8212; block %AD injection *</div><span class="tag b">Now</span><span class="chev">&#8250;</span></div><div class="rem-det"><div class="rem-code">Block: QUERY_STRING contains %AD or \xAD<br>Mode: Detection &#8594; Block &middot; Log: YES</div><div class="dry">* <strong>Run Detection Mode first.</strong> Review 24h logs &#8594; confirm no legitimate traffic &#8594; switch to Block. Rollback: instant.</div><div class="rem-chips"><span class="rem-chip">Owner: Security</span><span class="rem-chip">Downtime: None</span><span class="rem-chip">&lt;10 min</span></div><div class="jbtn pri"><div class="jbtn-l"><div class="jlogo b"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.53 2.03L6.2 7.37a1 1 0 000 1.41l1.06 1.06a1 1 0 001.42 0l1.76-1.76 4.67 4.67-4.67 4.67-1.76-1.76a1 1 0 00-1.42 0L6.2 16.72a1 1 0 000 1.41l5.33 5.34a1 1 0 001.41 0l5.34-5.34a1 1 0 000-1.41l-1.06-1.06a1 1 0 00-1.42 0l-1.76 1.76-4.67-4.67 4.67-4.67 1.76 1.76a1 1 0 001.42 0l1.06-1.06a1 1 0 000-1.41L12.94 2.03a1 1 0 00-1.41 0z"/></svg></div><div><div class="jt b">Create ticket &#8212; WAF rule (dry run first)</div><div class="js">Security &middot; Critical &middot; SLA: today</div></div></div><div class="jarr b">&#8594;</div></div></div></div>
+            <div class="rem"><div class="rem-sum" onclick="tog(this)"><div class="rem-n b">&#9313;</div><div class="rem-title">Apache rewrite rule &#8212; second layer</div><span class="tag b">Today</span><span class="chev">&#8250;</span></div><div class="rem-det"><div class="rem-code">RewriteEngine On<br>RewriteCond %{QUERY_STRING} ^[^=]*%ad[^=]*= [NC]<br>RewriteRule .* - [F,L]</div><div class="rem-warn">&#9888; Blocks primary vector only. Not a substitute for patching.</div><div class="rem-chips"><span class="rem-chip">Owner: Security</span><span class="rem-chip">Downtime: None</span><span class="rem-chip">&lt;5 min</span></div><div class="jbtn sec"><div class="jbtn-l"><div class="jlogo gr"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.53 2.03L6.2 7.37a1 1 0 000 1.41l1.06 1.06a1 1 0 001.42 0l1.76-1.76 4.67 4.67-4.67 4.67-1.76-1.76a1 1 0 00-1.42 0L6.2 16.72a1 1 0 000 1.41l5.33 5.34a1 1 0 001.41 0l5.34-5.34a1 1 0 000-1.41l-1.06-1.06a1 1 0 00-1.42 0l-1.76 1.76-4.67-4.67 4.67-4.67 1.76 1.76a1 1 0 001.42 0l1.06-1.06a1 1 0 000-1.41L12.94 2.03a1 1 0 00-1.41 0z"/></svg></div><div><div class="jt gr">Create ticket &#8212; Apache rewrite rule</div><div class="js">Security &middot; High</div></div></div><div class="jarr gr">&#8594;</div></div></div></div>
+            <div class="rem"><div class="rem-sum" onclick="tog(this)"><div class="rem-n g">&#9314;</div><div class="rem-title">Patch PHP &#8594; 8.2.20+</div><span class="tag g">Definitive fix</span><span class="chev">&#8250;</span></div><div class="rem-det"><p>Eliminates vulnerability at source. Requires deployment window + regression testing.</p><div class="rem-chips"><span class="rem-chip">Owner: DevOps</span><span class="rem-chip">Effort: Medium</span><span class="rem-chip">Downtime: ~15 min</span></div><div class="jbtn sec"><div class="jbtn-l"><div class="jlogo gr"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.53 2.03L6.2 7.37a1 1 0 000 1.41l1.06 1.06a1 1 0 001.42 0l1.76-1.76 4.67 4.67-4.67 4.67-1.76-1.76a1 1 0 00-1.42 0L6.2 16.72a1 1 0 000 1.41l5.33 5.34a1 1 0 001.41 0l5.34-5.34a1 1 0 000-1.41l-1.06-1.06a1 1 0 00-1.42 0l-1.76 1.76-4.67-4.67 4.67-4.67 1.76 1.76a1 1 0 001.42 0l1.06-1.06a1 1 0 000-1.41L12.94 2.03a1 1 0 00-1.41 0z"/></svg></div><div><div class="jt gr">Create ticket &#8212; Patch PHP 8.2.20+</div><div class="js">DevOps &middot; High &middot; Next window</div></div></div><div class="jarr gr">&#8594;</div></div></div></div>
+            <div class="rem"><div class="rem-sum" onclick="tog(this)"><div class="rem-n gr">&#9315;</div><div class="rem-title">Migrate PHP-CGI &#8594; PHP-FPM</div><span class="tag gr">Long-term</span><span class="chev">&#8250;</span></div><div class="rem-det"><p>Eliminates CGI attack surface entirely. Verify app compatibility first.</p><div class="rem-chips"><span class="rem-chip">Owner: DevOps</span><span class="rem-chip">Effort: Med&#8211;High</span><span class="rem-chip">Downtime: ~30 min</span><span class="rem-chip">Eliminates CVE class</span></div><div class="jbtn sec"><div class="jbtn-l"><div class="jlogo gr"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.53 2.03L6.2 7.37a1 1 0 000 1.41l1.06 1.06a1 1 0 001.42 0l1.76-1.76 4.67 4.67-4.67 4.67-1.76-1.76a1 1 0 00-1.42 0L6.2 16.72a1 1 0 000 1.41l5.33 5.34a1 1 0 001.41 0l5.34-5.34a1 1 0 000-1.41l-1.06-1.06a1 1 0 00-1.42 0l-1.76 1.76-4.67-4.67 4.67-4.67 1.76 1.76a1 1 0 001.42 0l1.06-1.06a1 1 0 000-1.41L12.94 2.03a1 1 0 00-1.41 0z"/></svg></div><div><div class="jt gr">Create ticket &#8212; Migrate to PHP-FPM</div><div class="js">DevOps &middot; Medium &middot; Q2</div></div></div><div class="jarr gr">&#8594;</div></div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ch-l"><div class="ci r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><span class="ct">Blast Radius</span></div><span class="tag r">Post-compromise</span></div>
+          <div class="cb">
+            <div class="sec-sum" onclick="togSec(this)"><div class="sec-sum-txt"><strong style="color:var(--red)">4 assets reachable</strong> if compromised &#8212; db-prod-01 (Critical), cache-prod-01, internal-api-svc, win-02/03</div><span class="chev">&#8250;</span></div>
+            <div class="sec-det">
+              <div class="blast-stats"><div class="bs"><div class="bs-n">4</div><div class="bs-l">Reachable</div></div><div class="bs"><div class="bs-n r">1</div><div class="bs-l">Critical</div></div><div class="bs"><div class="bs-n a">2</div><div class="bs-l">DB instances</div></div></div>
+              <div class="br"><div><div class="br-name">db-prod-01</div><div class="br-sub">TCP/5432 &middot; PostgreSQL &middot; Verify auth</div></div><span class="tag r">Critical</span></div>
+              <div class="br"><div><div class="br-name">cache-prod-01</div><div class="br-sub">TCP/6379 &middot; Redis &middot; Verify auth</div></div><span class="tag a">High</span></div>
+              <div class="br"><div><div class="br-name">internal-api-svc</div><div class="br-sub">TCP/8080 &middot; Internal endpoint</div></div><span class="tag a">High</span></div>
+              <div class="br"><div><div class="br-name">web-prod-win-02, 03</div><div class="br-sub">SMB/445 &middot; Lateral movement</div></div><span class="tag" style="background:#FEFCE8;border-color:#FEF08A;color:#92400E;">Medium</span></div>
+              <div class="bm-wrap"><div class="bm-title">Lateral paths confirmed</div>
+                <div class="bm-row"><div class="bm-nd"><div class="bm-b s">&#127919;</div><div class="bm-lb">win-04</div></div><div class="bm-edge"><div class="bm-port">TCP/5432</div><div class="bm-line r"></div></div><div class="bm-nd"><div class="bm-b dr">&#128452;</div><div class="bm-lb">db-prod-01</div></div><div class="bm-res r">&#8594; Production DB</div></div>
+                <div class="bm-row"><div class="bm-nd"><div class="bm-b s">&#127919;</div><div class="bm-lb">win-04</div></div><div class="bm-edge"><div class="bm-port">TCP/6379</div><div class="bm-line a"></div></div><div class="bm-nd"><div class="bm-b da">&#128230;</div><div class="bm-lb">cache</div></div><div class="bm-res a">&#8594; Redis</div></div>
+                <div class="bm-row"><div class="bm-nd"><div class="bm-b s">&#127919;</div><div class="bm-lb">win-04</div></div><div class="bm-edge"><div class="bm-port">SMB/445</div><div class="bm-line a"></div></div><div class="bm-nd"><div class="bm-b da">&#128187;</div><div class="bm-lb">win-02/03</div></div><div class="bm-res a">&#8594; Lateral</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ch-l"><div class="ci r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><span class="ct">Business Impact</span></div><span class="tag r">For escalation</span></div>
+          <div class="cb">
+            <div class="sec-sum" onclick="togSec(this)"><div class="sec-sum-txt"><strong style="color:var(--red)">$4.2M</strong> breach cost &middot; <strong style="color:var(--red)">2.3M</strong> records at risk &middot; GDPR notification within <strong style="color:var(--red)">72h</strong></div><span class="chev">&#8250;</span></div>
+            <div class="sec-det">
+              <div class="bi-stats"><div class="bi-s"><div class="bi-n">2.3M</div><div class="bi-l">Records in db-prod-01</div></div><div class="bi-s"><div class="bi-n">$4.2M</div><div class="bi-l">Avg. breach cost (IBM 2024)</div></div><div class="bi-s"><div class="bi-n">72h</div><div class="bi-l">GDPR deadline</div></div></div>
+              <div class="bi-row"><div class="bi-icon">&#9878;&#65039;</div><div><div class="bi-t">GDPR Article 33</div><div class="bi-d">Breach triggers mandatory reporting. Fines up to <strong>&#8364;10M or 2% of global turnover</strong>.</div></div></div>
+              <div class="bi-row"><div class="bi-icon">&#128274;</div><div><div class="bi-t">Ransomware risk</div><div class="bi-d">SMB/445 open to win-02, win-03. Avg. recovery: <strong>$2.73M</strong> (2024).</div></div></div>
+              <div class="bi-row"><div class="bi-icon">&#128203;</div><div><div class="bi-t">Board summary</div><div class="bi-d">Known exploit, unpatched 284 days. Immediate fix: zero cost, 10 minutes.</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ch-l"><div class="ci a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 012 2v7"/><path d="M11 18H8a2 2 0 01-2-2V9"/></svg></div><span class="ct">Similar Instances &amp; Root Cause</span></div><span class="tag a">Pattern detected</span></div>
+          <div class="cb">
+            <div class="sec-sum" onclick="togSec(this)"><div class="sec-sum-txt"><strong style="color:var(--red)">3 of 14 assets exploitable</strong> &#8212; root cause: <strong style="color:var(--amber)">zh-TW locale from 2019 provisioning template</strong></div><span class="chev">&#8250;</span></div>
+            <div class="sec-det">
+              <div style="font-size:11px;color:var(--t3);margin-bottom:9px;">Pattern across all 14 assets with this CVE, regardless of network path.</div>
+              <div class="si-hdr">
+                <svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="none" stroke="#E5E7EB" stroke-width="10"/><circle cx="32" cy="32" r="24" fill="none" stroke="#DC2626" stroke-width="10" stroke-dasharray="16.1 134.9" stroke-dashoffset="0" transform="rotate(-90 32 32)"/><circle cx="32" cy="32" r="24" fill="none" stroke="#D1D5DB" stroke-width="10" stroke-dasharray="118.8 32.2" stroke-dashoffset="-16.1" transform="rotate(-90 32 32)"/><text x="32" y="29" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="#111827">14</text><text x="32" y="40" text-anchor="middle" font-size="7" fill="#6B7280">assets</text></svg>
+                <div class="si-leg"><div class="si-li"><div class="si-ld" style="background:var(--red)"></div><strong style="color:var(--red)">3 exploitable</strong></div><div class="si-li"><div class="si-ld" style="background:var(--bm)"></div>11 not exploitable</div></div>
+              </div>
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--t4);margin:9px 0 5px;">3 exploitable instances</div>
+              <div class="si-list">
+                <div class="si-row"><div><div class="si-name">web-prod-win-04 &#8592; current</div><div class="si-sub">PHP-CGI &middot; zh-TW &middot; Internet-facing</div></div><span class="tag r">Critical</span></div>
+                <div class="si-row"><div><div class="si-name">web-prod-win-05</div><div class="si-sub">PHP-CGI &middot; zh-TW &middot; Internet-facing</div></div><span class="tag r">Critical</span></div>
+                <div class="si-row"><div><div class="si-name">web-staging-win-01</div><div class="si-sub">PHP-CGI &middot; zh-TW &middot; VPN-accessible</div></div><span class="tag a">High</span></div>
+              </div>
+              <div class="si-rc" style="margin-bottom:9px;"><div class="si-rc-lbl">&#9888; Root cause</div><div class="si-rc-txt">All 3 inherited zh-TW from a <strong>vendor provisioning template (March 2019).</strong> Fix the template &#8212; prevent recurrence on all future servers.</div></div>
+              <div class="jbtn sec"><div class="jbtn-l"><div class="jlogo gr"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.53 2.03L6.2 7.37a1 1 0 000 1.41l1.06 1.06a1 1 0 001.42 0l1.76-1.76 4.67 4.67-4.67 4.67-1.76-1.76a1 1 0 00-1.42 0L6.2 16.72a1 1 0 000 1.41l5.33 5.34a1 1 0 001.41 0l5.34-5.34a1 1 0 000-1.41l-1.06-1.06a1 1 0 00-1.42 0l-1.76 1.76-4.67-4.67 4.67-4.67 1.76 1.76a1 1 0 001.42 0l1.06-1.06a1 1 0 000-1.41L12.94 2.03a1 1 0 00-1.41 0z"/></svg></div><div><div class="jt gr">Create ticket &#8212; Fix provisioning template locale</div><div class="js">DevOps &middot; Prevents recurrence on all future servers</div></div></div><div class="jarr gr">&#8594;</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-r">
+        <div class="card">
+          <div class="ch"><div class="ch-l"><div class="ci r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><span class="ct">Risk Indicators</span></div></div>
+          <div class="cb"><div class="risk-rows">
+            <div class="rr"><div class="rr-l"><div class="rdot" style="background:var(--red)"></div>CISA KEV</div><span class="tag r">Yes</span></div>
+            <div class="rr"><div class="rr-l"><div class="rdot" style="background:var(--red)"></div>Public PoC</div><span class="tag r">Yes</span></div>
+            <div class="rr"><div class="rr-l"><div class="rdot" style="background:var(--red)"></div>No Auth Required</div><span class="tag r">Yes</span></div>
+            <div class="rr"><div class="rr-l"><div class="rdot" style="background:var(--red)"></div>Active in Wild</div><span class="tag r">Yes</span></div>
+            <div class="rr"><div class="rr-l"><div class="rdot" style="background:var(--amber)"></div>WAF Coverage</div><span class="tag a">Partial</span></div>
+            <div class="rr"><div class="rr-l"><div class="rdot" style="background:var(--t4)"></div>Patch Applied</div><span class="tag gr">No</span></div>
+            <div class="rr"><div class="rr-l"><div class="rdot" style="background:var(--red)"></div>Asset Criticality</div><span class="tag r">High</span></div>
+          </div></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ch-l"><div class="ci gr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><span class="ct">Instance Details</span></div></div>
+          <div class="cb np"><div class="dt">
+            <div class="dt-c"><div class="dt-l">Hostname</div><div class="dt-v m">web-prod-win-04</div></div>
+            <div class="dt-c"><div class="dt-l">IP</div><div class="dt-v m">10.0.14.88</div></div>
+            <div class="dt-c"><div class="dt-l">OS</div><div class="dt-v">Win Server 2019</div></div>
+            <div class="dt-c"><div class="dt-l">OS Patch</div><div class="dt-v r">KB5034768 &middot; Feb 2024</div></div>
+            <div class="dt-c"><div class="dt-l">Locale</div><div class="dt-v r">zh-TW / CP950</div></div>
+            <div class="dt-c"><div class="dt-l">PHP</div><div class="dt-v r">8.2.14 &middot; CGI</div></div>
+            <div class="dt-c"><div class="dt-l">Web Server</div><div class="dt-v m">Apache 2.4.58</div></div>
+            <div class="dt-c"><div class="dt-l">Owner</div><div class="dt-v">Platform Team</div></div>
+            <div class="dt-c"><div class="dt-l">Status</div><div class="dt-v r">Open &middot; J. Cohen</div></div>
+            <div class="dt-c"><div class="dt-l">Days Exposed</div><div class="dt-v r">284</div></div>
+          </div></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ch-l"><div class="ci b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div><span class="ct">CVE Details</span></div></div>
+          <div class="cb np"><div class="dt">
+            <div class="dt-c"><div class="dt-l">CVE ID</div><div class="dt-v m">CVE-2024-4577</div></div>
+            <div class="dt-c"><div class="dt-l">Type</div><div class="dt-v">Arg. Injection</div></div>
+            <div class="dt-c"><div class="dt-l">Vector</div><div class="dt-v">Network</div></div>
+            <div class="dt-c"><div class="dt-l">Privileges</div><div class="dt-v r">None</div></div>
+            <div class="dt-c"><div class="dt-l">Impact</div><div class="dt-v r">RCE</div></div>
+            <div class="dt-c"><div class="dt-l">Disclosed</div><div class="dt-v m">2024-06-06</div></div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+document.getElementById('ad').textContent=new Date().toISOString().split('T')[0];
+function tog(el){const c=el.querySelector('.chev'),d=el.nextElementSibling,o=d.classList.contains('open');d.classList.toggle('open',!o);if(c)c.classList.toggle('open',!o)}
+function togSec(el){const c=el.querySelector('.chev'),d=el.nextElementSibling,o=d.classList.contains('open');d.classList.toggle('open',!o);if(c)c.classList.toggle('open',!o)}
+function tDmg(el){const s=document.getElementById('dmg'),c=el.querySelector('.chev'),o=s.style.display==='flex';s.style.display=o?'none':'flex';if(c)c.classList.toggle('open',!o)}
+</script>
+</body>
+</html>
